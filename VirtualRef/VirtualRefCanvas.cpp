@@ -534,7 +534,7 @@ void VirtualRefDisplay::applyPreset(String name, int numChannels)
 */
 bool VirtualRefDisplay::keyPressed(const KeyPress &key, Component *originatingComponent)
 {
-//	std::cout << "ChannelRefDisplay::keyPressed key code = " << key.getKeyCode() << " | description = " << key.getTextDescription() << " | singleSelectMode = " << singleSelectMode << std::endl;
+//	std::cout << "VirtualRefDisplay::keyPressed key code = " << key.getKeyCode() << " | description = " << key.getTextDescription() << " | singleSelectMode = " << singleSelectMode << std::endl;
 	if (singleSelectMode)
 	{
 		if (selectedRow > -1 && selectedColumn > -1)

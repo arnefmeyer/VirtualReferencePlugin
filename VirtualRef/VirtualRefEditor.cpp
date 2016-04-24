@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 VirtualRefEditor::VirtualRefEditor(GenericProcessor* parentNode, bool useDefaultParameterEditors=true)
     : VisualizerEditor(parentNode, useDefaultParameterEditors), chanRefCanvas(nullptr)
 {	
-    tabText = "Channel Ref";
+    tabText = "Virtual Ref";
     desiredWidth = 180;
 }
 
