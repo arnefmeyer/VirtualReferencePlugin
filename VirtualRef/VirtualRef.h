@@ -68,6 +68,9 @@ public:
 	void setGlobalGain(float value);
 	float getGlobalGain();
 
+	void saveCustomParametersToXml(XmlElement* parentElement);
+	void loadCustomParametersFromXml();
+
 private:
 
 	ReferenceMatrix* refMat;

@@ -52,9 +52,6 @@ public:
 	Visualizer* createNewCanvas();
     void updateSettings();
 
-    void saveCustomParameters(XmlElement* xml);
-    void loadCustomParameters(XmlElement* xml);
-
     void saveParametersDialog();
     void loadParametersDialog();
 

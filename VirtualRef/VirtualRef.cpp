@@ -138,6 +138,63 @@ float VirtualRef::getGlobalGain()
 	return globalGain;
 }
 
+void VirtualRef::saveCustomParametersToXml(XmlElement* xml)
+{
+	int numChannels = refMat->getNumberOfChannels();
+
+    xml->setAttribute("Type", "VirtualRef");
+
+    XmlElement* paramXml = xml->createNewChildElement("PARAMETERS");
+    paramXml->setAttribute("GlobalGain", getGlobalGain());
+	paramXml->setAttribute("NumChannels", numChannels);
+
+	XmlElement* channelsXml = xml->createNewChildElement("REFERENCES");
+
+    for (int i=0; i<numChannels; i++)
+    {
+		float* ref = refMat->getChannel(i);
+ 
+        XmlElement* channelXml = channelsXml->createNewChildElement("CHANNEL");
+        channelXml->setAttribute("Index", i+1);
+		for (int j=0; j<numChannels; j++)
+		{
+			if (ref[j] > 0)
+			{
+				XmlElement* refXml = channelXml->createNewChildElement("REFERENCE");
+				refXml->setAttribute("Index", j+1);
+				refXml->setAttribute("Value", ref[j]);
+			}
+		}
+    }
+}
+
+void VirtualRef::loadCustomParametersFromXml()
+{
+	forEachXmlChildElementWithTagName(*parametersAsXml,	paramXml, "PARAMETERS")
+	{
+    	float globGain = (float)paramXml->getDoubleAttribute("GlobalGain");
+		setGlobalGain(globGain);
+	}
+
+	forEachXmlChildElementWithTagName(*parametersAsXml,	channelsXml, "REFERENCES")
+	{
+		forEachXmlChildElementWithTagName(*channelsXml,	channelXml, "CHANNEL")
+		{
+			int channelIndex = channelXml->getIntAttribute("Index");
+
+			forEachXmlChildElementWithTagName(*channelXml,	refXml, "REFERENCE")
+			{
+				int refIndex = refXml->getIntAttribute("Index");
+				float gain = (float)refXml->getDoubleAttribute("Value");
+				refMat->setValue(channelIndex - 1, refIndex - 1, gain);
+			}
+		}
+	}
+
+	updateSettings();
+}
+
+
 /* -----------------------------------------------------------------
 ReferenceMatrix
 ----------------------------------------------------------------- */

@@ -54,68 +54,6 @@ void VirtualRefEditor::updateSettings()
 	}
 }
 
-void VirtualRefEditor::saveCustomParameters(XmlElement* xml)
-{
-	VirtualRef* p = dynamic_cast<VirtualRef*>(getProcessor());
-	ReferenceMatrix* refMat = p->getReferenceMatrix();
-	int nChannels = refMat->getNumberOfChannels();
-
-    xml->setAttribute("Type", "VirtualRefEditor");
-
-	/* global gain */
-    XmlElement* paramXml = xml->createNewChildElement("PARAMETERS");
-    paramXml->setAttribute("GlobalGain", p->getGlobalGain());
-
-	/* references for each channel */
-	XmlElement* channelsXml = xml->createNewChildElement("REFERENCES");
-
-    for (int i=0; i<nChannels; i++)
-    {
-		float* ref = refMat->getChannel(i);
- 
-        XmlElement* channelXml = channelsXml->createNewChildElement("CHANNEL");
-        channelXml->setAttribute("Index", i+1);
-		for (int j=0; j<nChannels; j++)
-		{
-			if (ref[j] > 0)
-			{
-				XmlElement* refXml = channelXml->createNewChildElement("REFERENCE");
-				refXml->setAttribute("Index", j+1);
-				refXml->setAttribute("Value", ref[j]);
-			}
-		}
-    }
-}
-
-void VirtualRefEditor::loadCustomParameters(XmlElement* xml)
-{
-	VirtualRef* p = dynamic_cast<VirtualRef*>(getProcessor());
-	ReferenceMatrix* refMat = p->getReferenceMatrix();
-
-	forEachXmlChildElementWithTagName(*xml,	paramXml, "PARAMETERS")
-	{
-    	float globGain = (float)paramXml->getDoubleAttribute("GlobalGain");
-		p->setGlobalGain(globGain);
-	}
-
-	forEachXmlChildElementWithTagName(*xml,	channelsXml, "REFERENCES")
-	{
-		forEachXmlChildElementWithTagName(*channelsXml,	channelXml, "CHANNEL")
-		{
-			int channelIndex = channelXml->getIntAttribute("Index");
-
-			forEachXmlChildElementWithTagName(*channelXml,	refXml, "REFERENCE")
-			{
-				int refIndex = refXml->getIntAttribute("Index");
-				float gain = (float)refXml->getDoubleAttribute("Value");
-				refMat->setValue(channelIndex - 1, refIndex - 1, gain);
-			}
-		}
-	}
-
-	updateSettings();
-}
-
 void VirtualRefEditor::saveParametersDialog()
 {
     if (!acquisitionIsActive)
@@ -130,7 +68,8 @@ void VirtualRefEditor::saveParametersDialog()
             File fileToSave = fc.getResult();
 
 			XmlElement* xml = new XmlElement("SETTINGS");
-			saveCustomParameters(xml);
+			VirtualRef* p = dynamic_cast<VirtualRef*>(getProcessor());
+			p->saveCustomParametersToXml(xml);
 			if(!xml->writeToFile(fileToSave, String::empty))
 			{
 				CoreServices::sendStatusMessage("Couldn't save channel reference data to file.");
@@ -160,10 +99,11 @@ void VirtualRefEditor::loadParametersDialog()
         {
             File fileToOpen = fc.getResult();
 
-			XmlElement* xml = XmlDocument::parse(fileToOpen);
-			loadCustomParameters(xml);
+			VirtualRef* p = dynamic_cast<VirtualRef*>(getProcessor());
+			p->parametersAsXml = XmlDocument::parse(fileToOpen);
+			p->loadCustomParametersFromXml();
 			CoreServices::sendStatusMessage("Loaded channel reference data from file." + fileToOpen.getFullPathName());
-			delete xml;
+			delete p->parametersAsXml;
         }
     } else
 	{
