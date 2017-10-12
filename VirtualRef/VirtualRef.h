@@ -51,7 +51,7 @@ public:
     VirtualRef();
     ~VirtualRef();
 
-    void process(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+    void process(AudioSampleBuffer& buffer);
     void setParameter(int parameterIndex, float newValue);
 
     AudioProcessorEditor* createEditor();

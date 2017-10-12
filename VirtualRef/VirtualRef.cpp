@@ -33,6 +33,8 @@ VirtualRef::VirtualRef()
     : GenericProcessor("Virtual Ref"), channelBuffer(1, BUFFER_SIZE), 
 avgBuffer(1, BUFFER_SIZE), globalGain(1.0f)
 {
+    setProcessorType(PROCESSOR_TYPE_FILTER);
+
 	int nChannels = getNumInputs();
 	refMat = new ReferenceMatrix(nChannels);
 }
@@ -75,8 +77,7 @@ void VirtualRef::setParameter(int parameterIndex, float newValue)
 
 }
 
-void VirtualRef::process(AudioSampleBuffer& buffer,
-                             MidiBuffer& midiMessages)
+void VirtualRef::process(AudioSampleBuffer& buffer)
 {
 	float* ref;
 	float refGain;
