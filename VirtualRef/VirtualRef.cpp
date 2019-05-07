@@ -177,6 +177,7 @@ void VirtualRef::loadCustomParametersFromXml()
 		setGlobalGain(globGain);
 	}
 
+    refMat->clear();
 	forEachXmlChildElementWithTagName(*parametersAsXml,	channelsXml, "REFERENCES")
 	{
 		forEachXmlChildElementWithTagName(*channelsXml,	channelXml, "CHANNEL")
