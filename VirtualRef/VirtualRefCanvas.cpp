@@ -543,12 +543,15 @@ bool VirtualRefDisplay::keyPressed(const KeyPress &key, Component *originatingCo
 			if (key.getTextDescription().compare("cursor left") == 0 && selectedColumn > 0)
 			{
 //				std::cout << ":::Move left:::" << std::endl;
+                return true;
 			}
 			else if (key.getTextDescription().compare("cursor right") == 0 && selectedColumn < nChannels - 1)
 			{
 //				std::cout << ":::Move right:::" << std::endl;
+                return true;
 			}
 		}
 	}
+    return false;
 }
 
