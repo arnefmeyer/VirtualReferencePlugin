@@ -11,8 +11,26 @@ Features:
 
 # Installation
 
-Copy the VirtualRef folder to the plugin folder of your GUI. Then build 
-the all plugins as described in the [wiki](https://open-ephys.atlassian.net/wiki/display/OEW/Linux).
+First build [plugin-gui](https://github.com/open-ephys/plugin-gui) (development branch with cmake) following
+[Building plugin-GUI](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1301643269/Creating+Build+files) and then
+[Installing plugin-GUI](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/491544/Installation)
+
+Then, following instructions for building third-party Plugins [Building Plugins](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds)
+
+In ```VirtualReferencePlugin\VirtualRef\Build``` folder
+
+```
+export GUI_BASE_DIR=path/to/GUI
+```
+
+```path/to/GUI``` should be changed to the absolute path where the plugin-gui folder is located
+
+Then
+```
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
+make
+make install
+```
 
 # Important
 
